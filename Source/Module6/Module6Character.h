@@ -35,7 +35,7 @@ public:
 		void SetOnFire(float BaseDamage, float DamageTotalTime, float TakeDamageInterval);
 
 	//this can be an array or moved later as needed
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystemComponent* ParticleSystemComponent;
 
 	UFUNCTION(BlueprintCallable)
@@ -71,6 +71,9 @@ protected:
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 	void OnDeath(bool IsFellOut);
+	
+	UFUNCTION()
+	void OnDeathTimeFinished();
 
 	/** Called when the actor falls out of the world 'safely' (below KillZ and such) */
 	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
@@ -80,6 +83,11 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UDamageHandlerComponent* DamageHandlerComponent;
+
+	UPROPERTY(EditAnywhere)
+		float TimeRestartLevelAfterDeath = 2.0f;
+
+	FTimerHandle RestartLevelTimerHandle;
 
 protected:
 	// APawn interface

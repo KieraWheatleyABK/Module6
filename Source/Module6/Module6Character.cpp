@@ -141,7 +141,7 @@ float AModule6Character::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	UE_LOG(LogTemp, Warning, TEXT("AModule6Character::TakeDamage Damage %.2f"), Damage);
-	if (HealthComponent)
+	if (HealthComponent && !HealthComponent->IsDead())
 	{
 		HealthComponent->TakeDamage(Damage);
 		if (HealthComponent->IsDead())
@@ -157,13 +157,27 @@ void AModule6Character::OnDeath(bool IsFellOut)
 	APlayerController* PlayerController = GetController<APlayerController>();
 	if (PlayerController)
 	{
+		PlayerController->DisableInput(PlayerController);
+	}
+	GetWorld()->GetTimerManager().SetTimer(RestartLevelTimerHandle, this, &AModule6Character::OnDeathTimeFinished, TimeRestartLevelAfterDeath, false);
+}
+
+void AModule6Character::OnDeathTimeFinished()
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
 		PlayerController->RestartLevel();
 	}
 }
 
 void AModule6Character::FellOutOfWorld(const UDamageType& dmgType)
 {
-	OnDeath(true);
+	if (HealthComponent && !HealthComponent->IsDead())
+	{
+		HealthComponent->SetCurrentHealth(0.0f);
+		OnDeath(true);
+	}
 }
 
 void AModule6Character::SetOnFire(float BaseDamage, float DamageTotalTime, float TakeDamageInterval)
