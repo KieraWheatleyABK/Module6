@@ -10,7 +10,7 @@ class UDealDamageComponent;
 class UParticleSystemComponent;
 
 UCLASS()
-class ABSTRACTION_API AFireDamageActor : public AActor
+class MODULE6_API AFireDamageActor : public AActor
 {
 	GENERATED_BODY()
 

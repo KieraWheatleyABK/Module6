@@ -6,8 +6,12 @@
 #include "GameFramework/Character.h"
 #include "Module6Character.generated.h"
 
+class UDamageHandlerComponent;
+class UHealthComponent;
+class UParticleSystemComponent;
+
 UCLASS(config=Game)
-class AModule6Character : public ACharacter
+class MODULE6_API AModule6Character : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -24,6 +28,21 @@ public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Module6")
+		void SetOnFire(float BaseDamage, float DamageTotalTime, float TakeDamageInterval);
+
+	//this can be an array or moved later as needed
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* ParticleSystemComponent;
+
+	UFUNCTION(BlueprintCallable)
+		const bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable)
+		const float GetCurrentHealth() const;
 
 protected:
 
@@ -50,6 +69,17 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+	void OnDeath(bool IsFellOut);
+
+	/** Called when the actor falls out of the world 'safely' (below KillZ and such) */
+	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
+
+	UPROPERTY(EditAnywhere)
+	UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditAnywhere)
+	UDamageHandlerComponent* DamageHandlerComponent;
 
 protected:
 	// APawn interface

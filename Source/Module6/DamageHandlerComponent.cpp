@@ -7,7 +7,6 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Misc/ScopeLock.h"
 
-
 UDamageHandlerComponent::UDamageHandlerComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -18,7 +17,7 @@ void UDamageHandlerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerCharacter = Cast<AAbstractionPlayerCharacter>(GetOwner());
+	PlayerCharacter = Cast<AModule6Character>(GetOwner());
 }
 
 

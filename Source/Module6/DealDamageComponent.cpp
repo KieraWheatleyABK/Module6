@@ -37,7 +37,7 @@ void UDealDamageComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 		return;
 	}
 
-	AAbstractionPlayerCharacter* PlayerCharacter = Cast<AAbstractionPlayerCharacter>(OtherActor);
+	AModule6Character* PlayerCharacter = Cast<AModule6Character>(OtherActor);
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->SetOnFire(BaseDamage, DamageTotalTime, TakeDamageInterval);

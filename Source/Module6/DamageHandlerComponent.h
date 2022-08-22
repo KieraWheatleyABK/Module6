@@ -8,11 +8,11 @@
 #include "Misc/Optional.h"
 #include "DamageHandlerComponent.generated.h"
 
-class AAbstractionPlayerCharacter;
+class AModule6Character;
 class UParticleSystem;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class ABSTRACTION_API UDamageHandlerComponent : public UActorComponent
+class MODULE6_API UDamageHandlerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -43,7 +43,7 @@ protected:
 
 	TOptional<FDamageInfo> ActiveDamageInfo;
 
-	AAbstractionPlayerCharacter* PlayerCharacter = nullptr;
+	AModule6Character* PlayerCharacter = nullptr;
 
 	/** Holds a critical section object. */
 	FCriticalSection CriticalSection;

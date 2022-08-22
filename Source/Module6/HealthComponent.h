@@ -8,7 +8,7 @@
 
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class ABSTRACTION_API UHealthComponent : public UActorComponent
+class MODULE6_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -18,6 +18,7 @@ public:
 
 	void TakeDamage(float Damage) { CurrentHealth -= Damage; }
 	bool IsDead() { return CurrentHealth <= FLT_EPSILON; }
+	const float GetCurrentHealth() const { return CurrentHealth; }
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

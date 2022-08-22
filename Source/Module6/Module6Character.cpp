@@ -3,10 +3,13 @@
 #include "Module6Character.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "HealthComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "DamageHandlerComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AModule6Character
@@ -46,6 +49,11 @@ AModule6Character::AModule6Character()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	DamageHandlerComponent = CreateDefaultSubobject<UDamageHandlerComponent>(TEXT("DamageHandlerComponent"));
+	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystemComponent"));
+	ParticleSystemComponent->SetupAttachment(RootComponent);
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -126,4 +134,61 @@ void AModule6Character::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+
+float AModule6Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UE_LOG(LogTemp, Warning, TEXT("AModule6Character::TakeDamage Damage %.2f"), Damage);
+	if (HealthComponent)
+	{
+		HealthComponent->TakeDamage(Damage);
+		if (HealthComponent->IsDead())
+		{
+			OnDeath(false);
+		}
+	}
+	return Damage;
+}
+
+void AModule6Character::OnDeath(bool IsFellOut)
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
+		PlayerController->RestartLevel();
+	}
+}
+
+void AModule6Character::FellOutOfWorld(const UDamageType& dmgType)
+{
+	OnDeath(true);
+}
+
+void AModule6Character::SetOnFire(float BaseDamage, float DamageTotalTime, float TakeDamageInterval)
+{
+	if (DamageHandlerComponent)
+	{
+		DamageHandlerComponent->TakeFireDamage(BaseDamage, DamageTotalTime, TakeDamageInterval);
+		
+	}
+}
+
+const bool AModule6Character::IsAlive() const
+{
+	if (HealthComponent)
+	{
+		return !HealthComponent->IsDead();
+	}
+	return false;
+}
+
+const float AModule6Character::GetCurrentHealth() const
+{
+	if (HealthComponent)
+	{
+		return HealthComponent->GetCurrentHealth();
+	}
+	return false;
 }

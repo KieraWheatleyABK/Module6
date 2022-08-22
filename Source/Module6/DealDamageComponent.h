@@ -10,7 +10,7 @@
 class UCapsuleComponent;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class ABSTRACTION_API UDealDamageComponent : public UActorComponent
+class MODULE6_API UDealDamageComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
